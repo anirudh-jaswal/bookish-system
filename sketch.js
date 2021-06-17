@@ -99,7 +99,7 @@ function draw() {
     restart.visible = false;
 
     //scoring
-    score = score + Math.round(getFrameRate()/60);
+    //score = score + Math.round(getFrameRate()/60);
     
     if(score>0 && score%100 === 0){
        checkPointSound.play() 
@@ -114,6 +114,8 @@ function draw() {
 
     if(keyDown(RIGHT_ARROW)){
       trex.x= trex.x+12;
+      score++
+     
     }
     
     //add gravity
