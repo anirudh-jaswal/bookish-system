@@ -69,7 +69,6 @@ function setup() {
 
   
   trex.setCollider("rectangle",0,0,trex.width,trex.height);
-  //trex.debug = true;
   
   score = 0;
 
@@ -82,9 +81,8 @@ function draw() {
 
   camera.position.x = trex.x;
 
-  invisibleGround.velocityX=4;
-  ground.velocityX=4;
-  trex.velocityX=4;
+  invisibleGround.x=camera.position.x;
+  ground.x=camera.position.x;
 
   restart.x=camera.position.x+150;
   gameOver.x=camera.position.x+150;
@@ -100,10 +98,6 @@ function draw() {
     gameOver.visible = false;
     restart.visible = false;
 
-    invisibleGround.velocityX = (4 + 3* score/100);
-    trex.velocityX = (4 + 3* score/100);
-    ground.velocityX = (4 + 3* score/100);
-
     //scoring
     score = score + Math.round(getFrameRate()/60);
     
@@ -116,6 +110,10 @@ function draw() {
     if(keyDown("space")&& trex.y >= 100) {
         trex.velocityY = -12;
         jumpSound.play();
+    }
+
+    if(keyDown(RIGHT_ARROW)){
+      trex.x= trex.x+12;
     }
     
     //add gravity
@@ -151,8 +149,8 @@ function draw() {
     obstaclesGroup.setLifetimeEach(-1);
     cloudsGroup.setLifetimeEach(-1);
      
-    // obstaclesGroup.setVelocityXEach(0);
-     //cloudsGroup.setVelocityXEach(0);    
+     obstaclesGroup.setVelocityXEach(0);
+     cloudsGroup.setVelocityXEach(0);    
    }
   
  
@@ -180,7 +178,7 @@ function reset(){
 function spawnObstacles(){
  if (frameCount % 50 === 0){
    var obstacle = createSprite(camera.position.x +400,165,10,40);
-   //obstacle.velocityX = -(6 + score/100);
+   obstacle.velocityX =0;
    
     //generate random obstacles
     var rand = Math.round(random(1,6));
@@ -202,7 +200,7 @@ function spawnObstacles(){
    
     //assign scale and lifetime to the obstacle           
     obstacle.scale = 0.5;
-    obstacle.lifetime = 300;
+    //obstacle.lifetime = 300;
    
    //add each obstacle to the group
     obstaclesGroup.add(obstacle);
@@ -216,10 +214,10 @@ function spawnClouds() {
     cloud.y = Math.round(random(20,80));
     cloud.addImage(cloudImage);
     cloud.scale = 0.5;
-    //cloud.velocityX = -3;
+    cloud.velocityX = 0;
     
      //assign lifetime to the variable
-    cloud.lifetime = 200;
+    //cloud.lifetime = 200;
     
     //adjust the depth
     cloud.depth = trex.depth;
