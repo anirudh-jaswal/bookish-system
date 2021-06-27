@@ -1,5 +1,6 @@
 var PLAY = 1;
 var END = 0;
+var Over=2;
 var gameState = PLAY;
 
 var trex, trex_running, trex_collided;
@@ -9,7 +10,7 @@ var cloudsGroup, cloudImage;
 var obstaclesGroup, obstacle1, obstacle2, obstacle3, obstacle4, obstacle5, obstacle6;
 
 var score;
-var gameOverImg,restartImg
+var gameOverImg,restartImg,endImage,end,flag,flagImage;
 var jumpSound , checkPointSound, dieSound
 
 function preload(){
@@ -27,12 +28,15 @@ function preload(){
   obstacle5 = loadImage("obstacle5.png");
   obstacle6 = loadImage("obstacle6.png");
   
-  restartImg = loadImage("restart.png")
-  gameOverImg = loadImage("gameOver.png")
+  restartImg = loadImage("restart.png");
+  gameOverImg = loadImage("gameOver.png");
+  endImage=loadImage("the end image.png");
+  flagImage = loadImage("chekerd flag.png")
   
   jumpSound = loadSound("jump.mp3")
   dieSound = loadSound("die.mp3")
   checkPointSound = loadSound("checkPoint.mp3")
+
 }
 
 function setup() {
@@ -54,6 +58,13 @@ function setup() {
   restart = createSprite(200,140);
   restart.addImage(restartImg);
   
+  end = createSprite(300,100);
+  end.addImage(endImage);
+  end.scale=0.5;
+
+  flag = createSprite(7000,150);
+  flag.addImage(flagImage);
+  flag.scale=0.15;
   
  
   gameOver.scale = 0.5;
@@ -81,9 +92,12 @@ function draw() {
 
   camera.position.x = trex.x;
 
+  console.log(trex.x);
+
   invisibleGround.x=camera.position.x;
   ground.x=camera.position.x;
 
+  end.x=camera.position.x;
   restart.x=camera.position.x+150;
   gameOver.x=camera.position.x+150;
 
@@ -97,6 +111,7 @@ function draw() {
 
     gameOver.visible = false;
     restart.visible = false;
+    end.visible=false;
 
     //scoring
     //score = score + Math.round(getFrameRate()/60);
@@ -131,9 +146,13 @@ function draw() {
         //trex.velocityY = -12;
         jumpSound.play();
         gameState = END;
-        dieSound.play()
-      
+        dieSound.play();
     }
+
+    if(trex.x>7000){
+      gameState=Over;
+    }
+
   }
    else if (gameState === END) {
       gameOver.visible = true;
@@ -152,8 +171,18 @@ function draw() {
     cloudsGroup.setLifetimeEach(-1);
      
      obstaclesGroup.setVelocityXEach(0);
-     cloudsGroup.setVelocityXEach(0);    
+     cloudsGroup.setVelocityXEach(0); 
+
+   }else if(gameState===Over){
+   
+    obstaclesGroup.destroyEach();
+    cloudsGroup.destroyEach();
+    trex.destroy();
+    flag.destroy();
+    end.visible=true;
    }
+
+   
   
  
   //stop trex from falling down
@@ -164,7 +193,7 @@ function draw() {
     }
 
 
-  drawSprites();
+    drawSprites();    
 }
 
 function reset(){
@@ -173,6 +202,7 @@ function reset(){
   cloudsGroup.destroyEach();
   trex.changeAnimation("running",trex_running);
   score=0;
+  trex.x=0;
 
 }
 
